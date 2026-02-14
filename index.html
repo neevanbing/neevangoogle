@@ -3,104 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Custom Search Engine</title>
+    <title>My Search Engine</title>
     <style>
         body { 
-            font-family: 'Open Sans', Arial, sans-serif; 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: #ffffff; 
+            background: #fff;
+        }
+
+        /* Top Search Bar Area */
+        .header {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #dfe1e5;
+            background: #f8f9fa;
         }
 
         .logo {
-            font-size: 80px;
+            font-size: 32px;
             font-weight: bold;
-            margin-bottom: 30px;
-            user-select: none;
-        }
-
-        .search-container { 
-            width: 100%; 
-            max-width: 584px; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
+            margin-bottom: 15px;
+            cursor: pointer;
         }
 
         .search-box {
-            width: 100%;
+            width: 90%;
+            max-width: 600px;
             display: flex;
-            align-items: center;
-            border: 1px solid #dfe1e5;
-            border-radius: 24px;
-            padding: 5px 15px;
-            transition: box-shadow 0.2s;
-        }
-
-        .search-box:hover, .search-box:focus-within {
-            box-shadow: 0 1px 6px rgba(32,33,36,0.28);
-            border-color: rgba(223,225,229,0);
+            gap: 10px;
         }
 
         input { 
             flex: 1; 
-            padding: 10px; 
-            border: none; 
+            padding: 12px 20px; 
+            border: 1px solid #dfe1e5; 
+            border-radius: 24px; 
             outline: none; 
             font-size: 16px; 
-        }
-
-        .button-row {
-            margin-top: 25px;
-            display: flex;
-            gap: 12px;
+            box-shadow: 0 1px 6px rgba(32,33,36,0.1);
         }
 
         button { 
             padding: 10px 20px; 
-            border-radius: 4px; 
-            border: 1px solid #f8f9fa; 
-            background: #f8f9fa; 
-            color: #3c4043; 
-            font-size: 14px;
+            border-radius: 24px; 
+            border: none; 
+            background: #1a73e8; 
+            color: white; 
+            font-weight: bold;
             cursor: pointer; 
         }
 
-        button:hover {
-            border: 1px solid #dadce0;
-            color: #202124;
+        /* Results Window */
+        #results-container {
+            width: 100%;
+            height: calc(100vh - 150px); /* Fill the rest of the screen */
+            display: none; /* Hidden until search */
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .placeholder-text {
+            margin-top: 100px;
+            color: #70757a;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo">
-        <span style="color: #4285F4">G</span><span style="color: #EA4335">o</span><span style="color: #FBBC05">o</span><span style="color: #4285F4">g</span><span style="color: #34A853">l</span><span style="color: #EA4335">e</span>
-    </div>
-    
-    <div class="search-container">
+    <div class="header">
+        <div class="logo" onclick="location.reload()">
+            <span style="color: #4285F4">G</span><span style="color: #EA4335">o</span><span style="color: #FBBC05">o</span><span style="color: #4285F4">g</span><span style="color: #34A853">l</span><span style="color: #EA4335">e</span>
+        </div>
+        
         <div class="search-box">
-            <input type="text" id="query" placeholder="Search the web..." onkeydown="if(event.key==='Enter') executeSearch()">
+            <input type="text" id="query" placeholder="Type something to search..." onkeydown="if(event.key==='Enter') executeSearch()">
+            <button onclick="executeSearch()">Search</button>
         </div>
+    </div>
 
-        <div class="button-row">
-            <button onclick="executeSearch()">Google Search</button>
-            <button onclick="executeSearch()">I'm Feeling Lucky</button>
-        </div>
+    <div id="results-container">
+        <iframe id="search-frame" name="search-frame"></iframe>
+    </div>
+
+    <div id="placeholder" class="placeholder-text">
+        <p>Results will appear here after you search.</p>
     </div>
 
     <script>
         function executeSearch() {
             const query = document.getElementById('query').value;
-            
+            const container = document.getElementById('results-container');
+            const placeholder = document.getElementById('placeholder');
+            const frame = document.getElementById('search-frame');
+
             if (query.trim() !== "") {
-                // This takes the user's input and redirects them to a real Google results page
-                const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                window.location.href = searchUrl;
+                placeholder.style.display = "none";
+                container.style.display = "block";
+                
+                // Using Bing as the source because Google often blocks iframes for security
+                // This will show real results inside your page!
+                frame.src = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
             }
         }
     </script>
