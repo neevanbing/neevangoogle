@@ -3,117 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Search Engine</title>
+    <title>My Personal Search Engine</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            background: #fff;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        .search-header { background: white; width: 100%; padding: 30px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: sticky; top: 0; }
+        
+        .logo { font-size: 40px; font-weight: bold; margin-bottom: 15px; }
+        .logo span:nth-child(1) { color: #4285F4; }
+        .logo span:nth-child(2) { color: #EA4335; }
+        .logo span:nth-child(3) { color: #FBBC05; }
+        .logo span:nth-child(4) { color: #4285F4; }
+        .logo span:nth-child(5) { color: #34A853; }
+        .logo span:nth-child(6) { color: #EA4335; }
 
-        /* Top Search Bar Area */
-        .header {
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-bottom: 1px solid #dfe1e5;
-            background: #f8f9fa;
-        }
+        .search-input-container { display: flex; width: 90%; max-width: 600px; gap: 10px; }
+        
+        input { flex: 1; padding: 12px 20px; border: 1px solid #dfe1e5; border-radius: 24px; outline: none; font-size: 16px; box-shadow: 0 1px 6px rgba(32,33,36,0.1); }
+        input:focus { box-shadow: 0 1px 6px rgba(32,33,36,0.3); }
 
-        .logo {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            cursor: pointer;
-        }
+        button { padding: 10px 25px; border-radius: 24px; border: none; background: #1a73e8; color: white; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background: #1557b0; }
 
-        .search-box {
-            width: 90%;
-            max-width: 600px;
-            display: flex;
-            gap: 10px;
-        }
+        .results-area { width: 90%; max-width: 800px; margin-top: 30px; padding-bottom: 50px; }
+        
+        .result-item { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); animation: fadeIn 0.5s ease-in; }
+        
+        .result-item h3 { margin: 0 0 10px 0; }
+        .result-item a { color: #1a0dab; text-decoration: none; font-size: 20px; }
+        .result-item a:hover { text-decoration: underline; }
+        .result-item p { color: #4d5156; line-height: 1.5; margin: 0; }
+        .result-item .url { color: #006621; font-size: 14px; margin-bottom: 5px; display: block; }
 
-        input { 
-            flex: 1; 
-            padding: 12px 20px; 
-            border: 1px solid #dfe1e5; 
-            border-radius: 24px; 
-            outline: none; 
-            font-size: 16px; 
-            box-shadow: 0 1px 6px rgba(32,33,36,0.1);
-        }
-
-        button { 
-            padding: 10px 20px; 
-            border-radius: 24px; 
-            border: none; 
-            background: #1a73e8; 
-            color: white; 
-            font-weight: bold;
-            cursor: pointer; 
-        }
-
-        /* Results Window */
-        #results-container {
-            width: 100%;
-            height: calc(100vh - 150px); /* Fill the rest of the screen */
-            display: none; /* Hidden until search */
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .placeholder-text {
-            margin-top: 100px;
-            color: #70757a;
-            text-align: center;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #status { margin-top: 20px; color: #70757a; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo" onclick="location.reload()">
-            <span style="color: #4285F4">G</span><span style="color: #EA4335">o</span><span style="color: #FBBC05">o</span><span style="color: #4285F4">g</span><span style="color: #34A853">l</span><span style="color: #EA4335">e</span>
-        </div>
-        
-        <div class="search-box">
-            <input type="text" id="query" placeholder="Type something to search..." onkeydown="if(event.key==='Enter') executeSearch()">
-            <button onclick="executeSearch()">Search</button>
+    <div class="search-header">
+        <div class="logo"><span>M</span><span>y</span><span>S</span><span>e</span><span>a</span><span>r</span><span>c</span><span>h</span></div>
+        <div class="search-input-container">
+            <input type="text" id="searchInput" placeholder="Search Wikipedia..." onkeydown="if(event.key==='Enter') startSearch()">
+            <button onclick="startSearch()">Search</button>
         </div>
     </div>
 
-    <div id="results-container">
-        <iframe id="search-frame" name="search-frame"></iframe>
-    </div>
-
-    <div id="placeholder" class="placeholder-text">
-        <p>Results will appear here after you search.</p>
-    </div>
+    <div id="status"></div>
+    <div class="results-area" id="results"></div>
 
     <script>
-        function executeSearch() {
-            const query = document.getElementById('query').value;
-            const container = document.getElementById('results-container');
-            const placeholder = document.getElementById('placeholder');
-            const frame = document.getElementById('search-frame');
+        async function startSearch() {
+            const query = document.getElementById('searchInput').value;
+            const resultsDiv = document.getElementById('results');
+            const status = document.getElementById('status');
 
-            if (query.trim() !== "") {
-                placeholder.style.display = "none";
-                container.style.display = "block";
+            if (!query.trim()) return;
+
+            resultsDiv.innerHTML = "";
+            status.innerText = "Searching the web...";
+
+            // Wikipedia API URL (No keys required!)
+            const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&origin=*&srlimit=10&utf8=&format=json&srsearch=${encodeURIComponent(query)}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
                 
-                // Using Bing as the source because Google often blocks iframes for security
-                // This will show real results inside your page!
-                frame.src = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+                status.innerText = "";
+                const searchResults = data.query.search;
+
+                if (searchResults.length === 0) {
+                    status.innerText = "No results found for '" + query + "'.";
+                    return;
+                }
+
+                searchResults.forEach(result => {
+                    const pageUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(result.title)}`;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <span class="url">${pageUrl}</span>
+                        <h3><a href="${pageUrl}" target="_blank">${result.title}</a></h3>
+                        <p>${result.snippet}...</p>
+                    `;
+                    resultsDiv.appendChild(item);
+                });
+
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Error fetching results. Please try again.";
             }
         }
     </script>
