@@ -9,24 +9,20 @@
         
         .search-header { background: white; width: 100%; padding: 30px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; position: sticky; top: 0; z-index: 100; }
         
-        /* Updated Logo with NEEVAN'S SEARCH and specific color coding */
-        .logo { font-size: clamp(24px, 5vw, 40px); font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: -1px; }
-        .logo span:nth-child(1) { color: #4285F4; } /* N - Blue */
-        .logo span:nth-child(2) { color: #EA4335; } /* E - Red */
-        .logo span:nth-child(3) { color: #FBBC05; } /* E - Yellow */
-        .logo span:nth-child(4) { color: #4285F4; } /* V - Blue */
-        .logo span:nth-child(5) { color: #34A853; } /* A - Green */
-        .logo span:nth-child(6) { color: #EA4335; } /* N - Red */
-        .logo span:nth-child(7) { color: #4285F4; padding-left: 10px; } /* 'S - Blue */
-        .logo span:nth-child(8) { color: #34A853; padding-left: 10px; } /* SEARCH - Green */
+        /* Fixed Logo Section */
+        .logo { font-size: clamp(24px, 6vw, 45px); font-weight: bold; margin-bottom: 15px; user-select: none; }
+        .c1 { color: #4285F4; } /* Blue */
+        .c2 { color: #EA4335; } /* Red */
+        .c3 { color: #FBBC05; } /* Yellow */
+        .c4 { color: #34A853; } /* Green */
 
         .search-input-container { display: flex; width: 90%; max-width: 600px; gap: 10px; }
         
         input { flex: 1; padding: 12px 20px; border: 1px solid #dfe1e5; border-radius: 24px; outline: none; font-size: 16px; box-shadow: 0 1px 6px rgba(32,33,36,0.1); }
-        input:focus { box-shadow: 0 1px 6px rgba(32,33,36,0.3); }
+        input:focus { box-shadow: 0 1px 6px rgba(32,33,36,0.3); border-color: transparent; }
 
-        button { padding: 10px 25px; border-radius: 24px; border: none; background: #1a73e8; color: white; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        button:hover { background: #1557b0; }
+        button { padding: 10px 25px; border-radius: 24px; border: none; background: #1a73e8; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #1557b0; transform: scale(1.05); }
 
         .results-area { width: 90%; max-width: 800px; margin-top: 30px; padding-bottom: 50px; }
         
@@ -47,10 +43,11 @@
 
     <div class="search-header">
         <div class="logo">
-            <span>N</span><span>E</span><span>E</span><span>V</span><span>A</span><span>N</span><span>'S</span><span>SEARCH</span>
+            <span class="c1">N</span><span class="c2">E</span><span class="c3">E</span><span class="c1">V</span><span class="c4">A</span><span class="c2">N</span><span class="c1">'S</span>
+            <span style="margin-left: 10px;" class="c4">S</span><span class="c2">E</span><span class="c3">A</span><span class="c1">R</span><span class="c4">C</span><span class="c2">H</span>
         </div>
         <div class="search-input-container">
-            <input type="text" id="searchInput" placeholder="Search Wikipedia..." onkeydown="if(event.key==='Enter') startSearch()">
+            <input type="text" id="searchInput" placeholder="Search the web..." onkeydown="if(event.key==='Enter') startSearch()">
             <button onclick="startSearch()">Search</button>
         </div>
     </div>
@@ -67,7 +64,7 @@
             if (!query.trim()) return;
 
             resultsDiv.innerHTML = "";
-            status.innerText = "Searching Wikipedia for you...";
+            status.innerText = "Searching for '" + query + "'...";
 
             const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&prop=info&origin=*&srlimit=10&utf8=&format=json&srsearch=${encodeURIComponent(query)}`;
 
@@ -79,7 +76,7 @@
                 const searchResults = data.query.search;
 
                 if (searchResults.length === 0) {
-                    status.innerText = "No results found for '" + query + "'.";
+                    status.innerText = "No results found for '" + query + "'. Try another search!";
                     return;
                 }
 
@@ -98,7 +95,7 @@
 
             } catch (error) {
                 console.error(error);
-                status.innerText = "Error fetching results. Please try again.";
+                status.innerText = "Something went wrong. Please check your internet and try again.";
             }
         }
     </script>
